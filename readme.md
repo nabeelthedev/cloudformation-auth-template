@@ -4,13 +4,25 @@ A CloudFormation template for authentication resources.
 
 This template configures an authentication stack with the following features.
 
-#### Cognito User Pool with Google Sign-In
+### Cognito User Pool with Google Sign-In
 
-#### API Gateway with an Authorizer and CORS enabled
+The User Pool manages the JSON Web Tokens (JWT) which are used to reference client informatin in an app.
 
-#### Web App Firewall with a rate-based rule
+### API Gateway with an Authorizer and CORS enabled
 
-#### DynamoDB table with TTL enabled
+The API Gateway has a _/session_ resource which triggers lambda to return a session ID in exchange for a code which it uses to get a JWT. Clients recieve this code after signing in with Google. The client uses the session ID to perform backend actions. Keeping the JWTs on the server-side prevents exposure of clients credentials.
+
+The Authorizer will confirm the session ID exists and refresh the JWT if necessary. It will set an Authorization header with the value of the JWT.
+
+CORS is enabled for web apps with a different origin.
+
+### Web App Firewall with a rate-based rule
+
+The Web App Firewall (WAF) has one rate-based rule which temporarily blocks requests from an IP if they exceed a threshold (set to 2000 per 5 minutes). This can be expanded to trigger lambda to add to an IP match condition which would permanently block the attacker. There is a limit of 1000 IPs in a single request so this may not be a long term solution.
+
+### DynamoDB table with TTL enabled
+
+A table is used to store session IDs and JWTs. Time To Live (TTL) is enabled to remove items stored beyond a certain time (set to 1 hour).
 
 ## Requirements
 
@@ -23,4 +35,4 @@ This template configures an authentication stack with the following features.
 
 After the stack is created you will need to manually configure the User Pool Domain name (App integration/Domain name via console). This is done manually because custom domain names can take 15 minutes to complete in Cognito.
 
-Fill in parameters above with your information (i.e. _your-bucket_, _domain-name_).
+Fill in parameters above with your information (i.e. _your-bucket_, _auth-domain-name_).
