@@ -33,6 +33,6 @@ A table is used to store session IDs and JWTs. Time To Live (TTL) is enabled to 
 1. `aws cloudformation package --s3-bucket your-bucket --template-file ./template.yaml --output-template-file packaged-template.yaml`
 2. `aws cloudformation create-stack --stack-name stack-name --template-body file://packaged-template.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=UserPoolAuthDomain,ParameterValue=auth-domain-name ParameterKey=GraphQLEndpoint,ParameterValue=graphql-endpoint ParameterKey=IdPGoogleId,ParameterValue=your-google-id ParameterKey=IdPGoogleSecret,ParameterValue=your-google-secret ParameterKey=CognitoCallbackURL,ParameterValue=callback-url`
 
-Fill in parameters above with your information (i.e. _your-bucket_, _auth-domain-name_).
+Fill in parameters above with your information (i.e. _your-bucket_, _auth-domain-name_). Set the _UserPoolAuthDomain_ to any value if you are not using a custom auth domain and then run _update-stack_ when you've configured the domain name.
 
 After the stack is created you need to manually configure the User Pool Domain name (App integration/Domain name via console). This is done manually because custom domain names can take 15 minutes to complete in Cognito.
